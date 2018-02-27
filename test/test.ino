@@ -3,6 +3,7 @@
 Servo esc,steering;
 int throttlePin = 6;
 int steerPin = 5;
+//?
 int motorPin = 3;
 int servoPin = 9;
 int throttle;
@@ -60,10 +61,10 @@ int get_throttle(int t){
 }
 
 int get_steer(int s){
-  //s<1490 && s>1450)
-  //83 是中间
-  //55 最左
-  //111 最右
+  //(s<1490 && s>1450)
+  //83 middle
+  //55 leftmost
+  //111 rightmost
   if((s<1496 && s>1440)|| s==0){
     return 83;
   }else{
