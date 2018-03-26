@@ -1,3 +1,6 @@
 
 IMU sparkfun hookup guide:
 https://learn.sparkfun.com/tutorials/9dof-sensor-stick-hookup-guide?_ga=2.61874796.1748245937.1522014834-1866615856.1519703600
+
+IMU heading calculation:
+https://aerocontent.honeywell.com/aero/common/documents/myaerospacecatalog-documents/Defense_Brochures-documents/Magnetic__Literature_Application_notes-documents/AN203_Compass_Heading_Using_Magnetometers.pdf
