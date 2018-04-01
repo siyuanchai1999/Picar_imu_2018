@@ -7,3 +7,6 @@ https://aerocontent.honeywell.com/aero/common/documents/myaerospacecatalog-docum
 
 declination angle explanation:
 https://www.ngdc.noaa.gov/geomag/declination.shtml
+
+Run python program @reboot
+http://www.instructables.com/id/Raspberry-Pi-Launch-Python-script-on-startup/
