@@ -13,3 +13,6 @@ http://www.instructables.com/id/Raspberry-Pi-Launch-Python-script-on-startup/
 
 Introduction to IMU basics:
 http://students.iitk.ac.in/roboclub/lectures/IMU.pdf
+
+Free-IMU
+https://github.com/mjs513/FreeIMU-Updates
