@@ -16,3 +16,6 @@ http://students.iitk.ac.in/roboclub/lectures/IMU.pdf
 
 Free-IMU
 https://github.com/mjs513/FreeIMU-Updates
+
+Turnigy ESC Manual
+https://hobbyking.com/media/file/407056493X1759697X24.pdf
