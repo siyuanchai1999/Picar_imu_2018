@@ -19,10 +19,10 @@ unsigned long lastPrint = 0; // Keep track of print time
 unsigned long threshold;
 
 
-int throttlePin = 6;
+int throttlePin = 6; //input
 int steerPin = 5;
-int motorPin = 10;
-int servoPin = 9;
+int motorPin = 9;  //output
+int servoPin = 11;
 int throttle;
 int steer;
 
@@ -37,9 +37,10 @@ void setup() {
   imu.settings.device.agAddress = LSM9DS1_AG;
   
   Serial.begin(9600);
- 
   esc.attach(motorPin); // pin assignment for motor & servo
   steering.attach(servoPin); 
+  esc.write(90);
+  delay(4000);
   pinMode(throttlePin, INPUT);
   pinMode(steerPin, INPUT);
   
@@ -64,20 +65,24 @@ void loop() {
   if(millis()>threshold){
     throttle = pulseIn(throttlePin, HIGH);
     steer = pulseIn(steerPin, HIGH);
-    /*Serial.print("Before:    ");
+    //throttle = 0;
+    //steer = 0;
+    Serial.print("Before:    ");
     Serial.print("throttle:");
     Serial.println(throttle);
-    Serial.print(" steer:");
-    Serial.println(steer);*/
-    throttle = get_throttle(throttle);
-    /*steer = get_steer(steer);
+    //Serial.print(" steer:");
+    //Serial.println(steer);
+    
+    throttle = get_throttle(110);
+    steer = get_steer(steer);
+    
     Serial.print("after:    ");
     Serial.print("throttle:");
     Serial.println(throttle);
-    Serial.print(" steer:");
-    Serial.println(steer);*/
-    Serial.print('T');
-    Serial.println(throttle);
+    //Serial.print(" steer:");
+    //Serial.println(steer);
+    //Serial.print('T');
+    //Serial.println(throttle);
     esc.write(throttle);
     steering.write(steer);
     threshold = millis() + delta;
@@ -179,9 +184,6 @@ void printAccel()
 
 void printAttitude(float ax, float ay, float az, float mx, float my, float mz)
 {
-  float roll = atan2(ay, az);
-  float pitch = atan2(-ax, sqrt(ay * ay + az * az));
-  
   float heading;
   if (my == 0)
     heading = (mx < 0) ? PI : 0;
@@ -196,23 +198,17 @@ void printAttitude(float ax, float ay, float az, float mx, float my, float mz)
   else if (heading < 0) heading += 2 * PI;
   
   // Convert everything from radians to degrees:
-  heading *= 180.0 / PI;
-  pitch *= 180.0 / PI;
-  roll  *= 180.0 / PI;
-  
-  /*Serial.print("Pitch, Roll: ");
-  Serial.print(pitch, 2);
-  Serial.print(", ");
-  Serial.println(roll, 2);*/
-  Serial.print('H'); Serial.println(heading, 2);
+  //heading *= 180.0 / PI;
+  Serial.print('H'); Serial.println(heading, 4);
 }
 
 int get_throttle(int t){
-  if((t<1490 && t>1440) || t ==0){
+  if((t<1490 && t>1430) || t ==0){
     return 90;
   }else{
+    Serial.println("THROTTLEoutRange!!!!!");
     if(t> 1490){
-      return 99;
+      return 105;
     }else{
       return 70;
     }
@@ -224,7 +220,7 @@ int get_steer(int s){
   //83 是中间
   //55 最左
   //111 最右
-  if((s<1500 && s>1440)|| s==0){
+  if((s<1500 && s>1400)|| s==0){
     return 83;
   }else{
     return map(s,970,2021,55,111);
