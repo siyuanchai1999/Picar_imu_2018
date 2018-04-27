@@ -11,7 +11,7 @@ LSM9DS1 imu;
 
 #define PRINT_CALCULATED
 //#define PRINT_RAW
-#define PRINT_SPEED 250 // 250 ms between prints
+#define PRINT_SPEED 100 // 100 ms between prints
 
 #define DECLINATION 1.29 // Declination (degrees) in St. Louis,MO
 
@@ -21,8 +21,10 @@ unsigned long threshold;
 
 int throttlePin = 6;
 int steerPin = 5;
-int motorPin = 10;
-int servoPin = 9;
+int motorPin = 9;
+int servoPin = 11;
+int Ledpin = 13;
+boolean readyNot = 0;
 int throttle;
 int steer;
 
@@ -39,10 +41,12 @@ void setup() {
   Serial.begin(9600);
  
   esc.attach(motorPin); // pin assignment for motor & servo
-  steering.attach(servoPin); 
+  steering.attach(servoPin);
+  esc.write(90);
+  delay(4000);
   pinMode(throttlePin, INPUT);
   pinMode(steerPin, INPUT);
-  
+  pinMode(Ledpin, OUTPUT);
   if (!imu.begin())
   {
     Serial.println("Failed to communicate with LSM9DS1.");
@@ -55,35 +59,50 @@ void setup() {
       ;
   }
   threshold = millis();
-  Serial.println("ready");
+  digitalWrite(Ledpin, HIGH);
+  delay(1000);
+  digitalWrite(Ledpin, LOW);
   
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  if(millis()>threshold){
-    throttle = pulseIn(throttlePin, HIGH);
-    steer = pulseIn(steerPin, HIGH);
-    /*Serial.print("Before:    ");
-    Serial.print("throttle:");
-    Serial.println(throttle);
-    Serial.print(" steer:");
-    Serial.println(steer);*/
-    throttle = get_throttle(throttle);
-    /*steer = get_steer(steer);
-    Serial.print("after:    ");
-    Serial.print("throttle:");
-    Serial.println(throttle);
-    Serial.print(" steer:");
-    Serial.println(steer);*/
-    Serial.print('T');
-    Serial.println(throttle);
-    esc.write(throttle);
-    steering.write(steer);
-    threshold = millis() + delta;
+  if(Serial.available()){
+    char in = Serial.read();
+    if(in == '!'){
+      readyNot = 1;
+    }
   }
-  imu_read();
-  imu_write();
+  
+  if(readyNot){
+    digitalWrite(Ledpin, HIGH);
+    if(millis()>threshold){
+      throttle = pulseIn(throttlePin, HIGH);
+      steer = pulseIn(steerPin, HIGH);
+      //Serial.print("Before:    ");
+      //Serial.print("throttle:");
+      //Serial.println(throttle);
+      //Serial.print(" steer:");
+      //Serial.println(steer);*/
+      throttle = get_throttle(throttle);
+      steer = get_steer(steer);
+      /*Serial.print("after:    ");
+      Serial.print("throttle:");
+      Serial.println(throttle);
+      Serial.print(" steer:");
+      Serial.println(steer);*/
+      //Serial.print('T');
+      //Serial.println(throttle);
+      //Serial.print('S');
+      //Serial.println(steer);
+      if(throttle == 70) throttle = 90;
+      esc.write(throttle);
+      steering.write(steer);
+      threshold = millis() + delta;
+    }
+    imu_read();
+    imu_write();
+  }
   
 }
 
@@ -212,7 +231,7 @@ int get_throttle(int t){
     return 90;
   }else{
     if(t> 1490){
-      return 99;
+      return 105;
     }else{
       return 70;
     }
