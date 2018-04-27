@@ -89,10 +89,10 @@ float recentFive[5];
 float mxFive[5];
 float myFive[5];
 long index = 0;
-long mxIndex = 0;
-long myIndex = 0;
-float curMean = 0;
-float lastMean = 0;
+float headingMean =0;
+float mxMean = 0;
+float myMean = 0;
+int numAverage = 5;
 void setup() 
 {
   
@@ -251,12 +251,54 @@ void printMag()
 #endif
 }
 
-float average(float arr[]){
-  float result =0;
-  for(int i =0;i<5;i++){
-    result += arr[i];
-   }
-   return result/5;
+float average(float arr[], float newValue, float preAverage){
+  if(index<numAverage){
+    float sum = 0;
+    arr[index] = newValue;
+    for(int i=0; i<=index;i++){
+      sum = sum + arr[i];
+    }
+    return sum/(index+1);
+  }else{
+    float oldValue = arr[index%numAverage];
+    arr[index%numAverage] = newValue;
+    return preAverage + (newValue - oldValue)/numAverage;
+  }
+}
+
+float headingCalc(float x, float y){
+  //Serial.print(x);
+  //Serial.print( "  ");
+  //Serial.println(y);
+  float h = 0.0;
+   if(y ==0){
+      if(x<0){
+        h = 180.0;
+       }else{
+        h = 0.0;
+    }
+  }else{
+    if(y>0){
+      h = 90 - atan(x/y)*180/PI;
+      //Serial.println("case 1");
+    }else if(y<0){
+      h = 270 - atan(x/y)*180/PI;
+      //Serial.println("case 2");
+    }
+  }
+  return h;
+}
+
+float manualHeadOffset(float h){
+  if( (0<=h && h<80) || (350<h && h<=360)){
+    h = h +10;
+    if(h>360) h = h - 360;
+  }else if( h>270 && h<=350){
+    h = 9/8*h - 270/8;
+  }else if(h >=80 && h<180){
+    h = 9/10*h +18;
+  }
+  return h;
 }
 // Calculate pitch, roll, and heading.
 // Pitch/roll calculations take from this app note:
@@ -284,55 +326,26 @@ float average(float arr[]){
 void printAttitude(
 float ax, float ay, float az, float mx, float my, float mz)
 {
-  float offset_angle = 312.0;
-  float heading, lastHeading;
+  float heading;
   float mxOffset, myOffset;
-  mxFive[mxIndex%5] = mx;
-  myFive[myIndex%5] = my;
-  mxIndex++;
-  myIndex++;
-  //Serial.print("mx: ");
-  //Serial.print(average(mxFive));
-  //Serial.print("  my: ");
-  //Serial.println(average(myFive));
-  mxOffset = average(mxFive) - 1205;
-  myOffset = average(myFive) + 4635;
-  //Serial.print(" mx:  ");
-  //Serial.print(mxOffset);
-  //Serial.print(" my ");
-  //Serial.println(myOffset);
-  if(myOffset ==0){
-    if(mxOffset<0){
-      heading = 180.0;
-    }else{
-      heading = 0.0;
-    }
-  }else{
-    if(myOffset>0){
-      heading = 90 - atan(mxOffset/myOffset)*180/PI;
-      Serial.println("case 1");
-    }else if(myOffset<0){
-      heading = 270 - atan(mxOffset/myOffset)*180/PI;
-      Serial.println("case 2");
-    }
-  }
-  //heading -= DECLINATION;
+  mxMean = average(mxFive, mx, mxMean);
+  myMean = average(myFive, my, myMean);
+  /*Serial.print("mx: ");
+  Serial.print(mx);
+  Serial.print(" mxMean ");
+  Serial.print(mxMean);
+  Serial.print(" my: ");
+  Serial.print(my);
+  Serial.print(" myMean ");
+  Serial.println(myMean); */
+  mxOffset = mxMean - 1205;
+  myOffset = mxMean + 4635;
   
-  lastHeading = recentFive[index%5];
-  recentFive[index%5] = heading;
-  if(index<5){    //simplification for average calculation
-    curMean = 0;
-    for(int i=0;i<=index;i++){
-      curMean = curMean +recentFive[i];
-    }
-    curMean = curMean/(index+1);
-  }else{
-      curMean = lastMean + (heading - lastHeading)/5;
-  }
+  heading = headingCalc(mxOffset, myOffset);
+  headingMean = average(recentFive, heading, headingMean);
   index++;
-  lastMean = curMean;
  // Serial.print("index: "); Serial.print(index);
-  //Serial.print("  Heading: "); Serial.print(heading, 2);
-  Serial.print("  average: "); Serial.println(curMean,4);
+  Serial.print("  Heading: "); Serial.print(heading, 2);
+  Serial.print("  average: "); Serial.println(headingMean,4);
   
 }
