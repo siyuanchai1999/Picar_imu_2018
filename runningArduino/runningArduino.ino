@@ -193,9 +193,9 @@ void printAccel()
   // If you want to print calculated values, you can use the
   // calcAccel helper function to convert a raw ADC value to
   // g's. Give the function the value that you want to convert.
-  Serial.print(imu.calcAccel(imu.ax), 2);
+  Serial.print(imu.calcAccel(imu.ax), 3);
   Serial.print(", ");
-  Serial.println(imu.calcAccel(imu.ay), 2);
+  Serial.println(imu.calcAccel(imu.ay), 3);
   //Serial.print(", ");
   //Serial.print(imu.calcAccel(imu.az), 2);
   //Serial.println(" g");
@@ -287,7 +287,7 @@ void printAttitude(float ax, float ay, float az, float mx, float my, float mz)
   Serial.print(" myMean ");
   Serial.println(myMean); */
   mxOffset = mxMean - 1205;
-  myOffset = mxMean + 4635;
+  myOffset = myMean + 4635;
   
   heading = headingCalc(mxOffset, myOffset);
   headingMean = average(recentFive, heading, headingMean);
@@ -302,7 +302,7 @@ int get_throttle(int t){
     return 90;
   }else{
     if(t> 1490){
-      return 110;
+      return 108;
     }else{
       return 70;
     }
