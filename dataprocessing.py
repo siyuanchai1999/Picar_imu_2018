@@ -1,11 +1,14 @@
 import serial
 import csv
 import numpy as np
+import RPi.GPIO as GPIO
 #import pandas as pd
 import time
 import os
 ser = serial.Serial('/dev/ttyACM0',9600)
- 
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
 
 listA_x = [0]
 listA_y = [0]
@@ -121,5 +124,6 @@ while (con == 1):
             con = process_imu_data(line)
             
         
-        
+GPIO.output(18,GPIO.HIGH)
+print("program finished")
  
