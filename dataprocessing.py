@@ -1,7 +1,7 @@
 import serial
 import csv
 import numpy as np
-import pandas as pd
+#import pandas as pd
 import time
 ser = serial.Serial('/dev/ttyACM0',9600)
  
@@ -12,7 +12,7 @@ listA_y = [0]
 listAcc_E =[0]
 listAcc_N =[0]
 listG = []
-listH = []
+listH = [np.pi/2]
 listV_E = [0]
 listV_N = [0]
 listD_E = [1]
@@ -25,8 +25,9 @@ sumH = 0.0
 sumD_x = 0.0
 sumD_y = 0.0
 index = 1
+
 time.sleep(6)
-ser.write('!'.encode)
+ser.write('!'.encode())
 
 def process_imu_data(line):
     delta_t = 0.1
@@ -40,8 +41,8 @@ def process_imu_data(line):
         sumA_x = sumA_x + A_x
         sumA_y = sumA_y + A_y
         listA_x.append(A_x)
-        listA_y.append(A_x)
-        
+        listA_y.append(A_y)
+         
     elif(str_line[0] == 'G'):
         G = float(str_line[1:-2])
         global sumG
@@ -53,6 +54,7 @@ def process_imu_data(line):
         global index
         sumH = sumH + H
         H = H - 90
+        H = H/180* np.pi
         listH.append(H)
         accele_E = listA_y[index] *np.cos(H) - listA_x[index]* np.sin(H) #convet IMU coordinates to world E-N coordinate
         accele_N = listA_y[index] *np.sin(H) + listA_x[index]* np.cos(H)
@@ -69,7 +71,8 @@ def process_imu_data(line):
         listD_E.append(dis_E)
         listD_N.append(dis_N)
         
-        global index = index + 1
+        global index
+        index = index + 1
     elif(str_line[0] == 'T'):
         if(int(str_line[1:-2]) == 70):
             with open('data.csv','w') as mycsv:
@@ -89,7 +92,7 @@ def process_imu_data(line):
                 wr.writerow(listV_N)
 
                 wr.writerow(listD_E)
-                wr.writerow(listD_E)
+                wr.writerow(listD_N)
                 
                 #listG.append(sumG)
                 wr.writerow(listG)
@@ -111,3 +114,4 @@ while True:
             
         
         
+
