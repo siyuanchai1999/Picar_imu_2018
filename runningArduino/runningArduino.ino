@@ -276,6 +276,8 @@ void printAttitude(float ax, float ay, float az, float mx, float my, float mz)
   
   float heading;
   float mxOffset, myOffset;
+  float resultHead;
+  
   mxMean = average(mxFive, mx, mxMean);
   myMean = average(myFive, my, myMean);
   /*Serial.print("mx: ");
@@ -290,15 +292,21 @@ void printAttitude(float ax, float ay, float az, float mx, float my, float mz)
   myOffset = myMean + 4635;
   
   heading = headingCalc(mxOffset, myOffset);
+  
   headingMean = average(recentFive, heading, headingMean);
+  if(heading<15 || heading>345){
+    resultHead = heading;
+  }else{
+    resultHead = headingMean;
+  }
   index++;
  // Serial.print("index: "); Serial.print(index);
-  Serial.print('H'); Serial.print(headingMean, 3);
+  Serial.print('H'); Serial.print(resultHead, 3);
   //Serial.print("  average: "); Serial.println(headingMean,4);
 }
 
 int get_throttle(int t){
-  if((t<1490 && t>1440) || t ==0){
+  if((t<1490 && t>1420) || t ==0){
     return 90;
   }else{
     if(t> 1490){
