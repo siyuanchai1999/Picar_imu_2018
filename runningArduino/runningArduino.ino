@@ -324,10 +324,17 @@ int get_steer(int s){
   //83 是中间
   //55 最左
   //111 最右
+
+  //97,69 for run in a loop
+  //86, 80 for running in line
   if((s<1500 && s>1440)|| s==0){
     return 83;
   }else{
-    return map(s,970,2021,55,111);
+    if(s>1500){
+      return 97;
+    }else{
+      return 69;
+    }
   }
 }
 
