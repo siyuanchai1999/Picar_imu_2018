@@ -11,7 +11,7 @@ LSM9DS1 imu;
 
 #define PRINT_CALCULATED
 //#define PRINT_RAW
-#define PRINT_SPEED 100 // 100 ms between prints
+#define PRINT_SPEED 50 // 100 ms between prints
 
 #define DECLINATION 1.29 // Declination (degrees) in St. Louis,MO
 float recentFive[5];
@@ -37,7 +37,7 @@ boolean readyNot = 0;
 int throttle;
 int steer;
 
-int delta = 100;
+int delta = 50;
 
 
 void setup() {
@@ -47,7 +47,7 @@ void setup() {
   imu.settings.device.mAddress = LSM9DS1_M;
   imu.settings.device.agAddress = LSM9DS1_AG;
   
-  Serial.begin(9600);
+  Serial.begin(115200);
  
   esc.attach(motorPin); // pin assignment for motor & servo
   steering.attach(servoPin);
@@ -193,9 +193,11 @@ void printAccel()
   // If you want to print calculated values, you can use the
   // calcAccel helper function to convert a raw ADC value to
   // g's. Give the function the value that you want to convert.
-  Serial.print(imu.calcAccel(imu.ax), 3);
+  //Serial.print(imu.calcAccel(imu.ax), 3);
+  Serial.print(0.0,2);
   Serial.print(", ");
-  Serial.println(imu.calcAccel(imu.ay), 3);
+  Serial.println(0.4101,4);
+  //Serial.println(imu.calcAccel(imu.ay), 3);
   //Serial.print(", ");
   //Serial.print(imu.calcAccel(imu.az), 2);
   //Serial.println(" g");
