@@ -160,7 +160,7 @@ void imu_write(){
   }
 }
 
-void printGyro()
+void printGyro() 
 {
   // Now we can use the gx, gy, and gz variables as we please.
   // Either print them as raw ADC values, or calculated in DPS.
