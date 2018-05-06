@@ -53,7 +53,7 @@ void setup() {
   imu.settings.device.agAddress = LSM9DS1_AG;
   
   Serial.begin(115200);
- 
+  
   esc.attach(motorPin); // pin assignment for motor & servo
   steering.attach(servoPin);
   esc.write(90);
